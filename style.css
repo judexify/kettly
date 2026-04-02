@@ -1,0 +1,572 @@
+:root {
+  --primary: #2563eb;
+  --bg: #f8fafc;
+  --sidebar: #ffffff;
+  --text: #1e293b;
+  --border: #e2e8f0;
+  --tea: #d97706;
+  --kettle-color: #64748b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family:
+    "Inter",
+    -apple-system,
+    sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+#entry-screen {
+  position: fixed;
+  inset: 0;
+  background: white;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+
+.entry-container {
+  text-align: center;
+  width: 300px;
+  position: relative;
+}
+
+#name-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+#name-input:focus {
+  border-color: var(--primary);
+}
+
+.falling-char {
+  position: absolute;
+  pointer-events: none;
+  font-weight: bold;
+  color: var(--tea);
+  animation: fall 0.8s forwards ease-in;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(200px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.tea-spill-overlay {
+  position: absolute;
+  bottom: -50px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: var(--tea);
+  filter: blur(10px);
+  opacity: 0;
+  transition:
+    opacity 0.5s,
+    height 0.5s;
+  border-radius: 50%;
+}
+
+#app-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: 1fr 40px;
+  height: 100vh;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.sidebar {
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  padding: 27px 14px 12px 21px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--primary);
+  margin-bottom: 43px;
+  letter-spacing: -1px;
+}
+
+.nav-link {
+  padding: 10px 15px;
+  color: #64748b;
+  text-decoration: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.nav-link:hover {
+  background: #f1f5f9;
+}
+
+.main-content {
+  padding: 40px;
+  position: relative;
+  overflow-y: auto;
+}
+
+.page-content {
+  display: none;
+}
+.page-content.active {
+  display: block;
+}
+
+.kettle-container {
+  margin: 50px auto;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+#kettle-svg {
+  width: 200px;
+  transition: transform 0.1s;
+}
+
+.steam {
+  position: absolute;
+  top: 20%;
+  font-size: 24px;
+  opacity: 0;
+  animation: rise 2s infinite;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-100px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.chaos-shape {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.status-bar {
+  grid-column: span 2;
+  background: #1e293b;
+  color: #94a3b8;
+  font-family: monospace;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-top: 1px solid #334155;
+}
+
+.chart-box {
+  width: 100%;
+  height: 200px;
+  border: 2px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  margin-top: 20px;
+}
+
+#final-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+}
+
+.modal-card h1 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.odd-palette {
+  color: #5a5a00;
+}
+
+.container {
+  position: relative;
+  width: 220px;
+  height: 200px;
+  margin: 16px auto 0;
+}
+
+.kettle {
+  position: absolute;
+  top: 10px;
+  left: 30px;
+  width: 100px;
+  height: 80px;
+  background-color: #34495e;
+  border-radius: 30px 30px 8px 8px;
+  animation: pour 6s ease-in-out infinite;
+  transform-origin: right bottom;
+  z-index: 2;
+}
+
+.kettle::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: -30px;
+  width: 40px;
+  height: 60px;
+  border: 8px solid #2c3e50;
+  border-right: none;
+  border-radius: 20px 0 0 20px;
+}
+
+.kettle::after {
+  content: "";
+  position: absolute;
+  top: 20px;
+  right: -30px;
+  width: 40px;
+  height: 20px;
+  background-color: #34495e;
+  clip-path: polygon(0 0, 100% 30%, 100% 70%, 0 100%);
+}
+
+.tea-stream {
+  position: absolute;
+  top: 68px;
+  left: 158px;
+  width: 5px;
+  height: 0;
+  background-color: #d35400;
+  animation: stream 6s ease-in-out infinite;
+  border-radius: 0 0 4px 4px;
+  z-index: 1;
+}
+
+.cup-container {
+  position: absolute;
+  bottom: 10px;
+  right: 30px;
+}
+
+.cup {
+  position: relative;
+  width: 80px;
+  height: 50px;
+  background-color: white;
+  border: 4px solid #bdc3c7;
+  border-radius: 0 0 40px 40px;
+  overflow: hidden;
+}
+
+.cup::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: -20px;
+  width: 20px;
+  height: 20px;
+  border: 4px solid #bdc3c7;
+  border-radius: 50%;
+}
+
+.tea-fill {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 0%;
+  background-color: #e67e22;
+  animation: fill-cup 6s ease-in-out infinite;
+}
+
+@keyframes pour {
+  0%,
+  10%,
+  90%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30%,
+  70% {
+    transform: rotate(40deg);
+  }
+}
+
+@keyframes stream {
+  0%,
+  25% {
+    height: 0;
+    opacity: 0;
+  }
+  30%,
+  70% {
+    height: 110px;
+    opacity: 1;
+  }
+  75%,
+  100% {
+    height: 110px;
+    opacity: 0;
+  }
+}
+
+@keyframes fill-cup {
+  0%,
+  35% {
+    height: 0%;
+  }
+  70%,
+  100% {
+    height: 80%;
+  }
+}
+
+.steam {
+  position: absolute;
+  top: -20px;
+  left: 30px;
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  filter: blur(2px);
+  animation: steam-rise 2s infinite;
+  opacity: 0;
+}
+
+@keyframes steam-rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-40px) scale(1.5);
+    opacity: 0;
+  }
+}
+.larryImg {
+  width: 5.4rem;
+}
+
+@media (max-width: 768px) {
+  #app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr 40px;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .logo {
+    margin-bottom: 0;
+    margin-right: 12px;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .nav-link {
+    padding: 6px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .status-bar {
+    grid-column: 1;
+  }
+
+  .main-content {
+    padding: 24px 20px;
+  }
+
+  .kettle-container {
+    width: 220px;
+    height: 220px;
+    margin: 30px auto;
+  }
+
+  #kettle-svg {
+    width: 160px;
+  }
+
+  .entry-container {
+    width: 280px;
+  }
+
+  .modal-card {
+    padding: 28px 20px;
+    max-width: 90vw;
+  }
+
+  .modal-card h1 {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .entry-container {
+    width: 90vw;
+  }
+
+  #name-input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .sidebar {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .nav-link {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .main-content {
+    padding: 16px 14px;
+  }
+
+  .kettle-container {
+    width: 180px;
+    height: 180px;
+    margin: 20px auto;
+  }
+
+  #kettle-svg {
+    width: 130px;
+  }
+
+  .container {
+    width: 180px;
+    height: 160px;
+  }
+
+  .kettle {
+    width: 80px;
+    height: 65px;
+    top: 8px;
+    left: 20px;
+  }
+
+  .tea-stream {
+    left: 128px;
+    top: 55px;
+  }
+
+  .cup {
+    width: 65px;
+    height: 40px;
+  }
+
+  .modal-card {
+    padding: 20px 16px;
+  }
+
+  .modal-card h1 {
+    font-size: 28px;
+  }
+
+  #history-modal > div {
+    padding: 16px;
+    max-height: 85vh;
+  }
+
+  .status-bar {
+    font-size: 10px;
+    padding: 0 12px;
+  }
+
+  .chart-box {
+    height: 140px;
+  }
+}
+
+@media (max-width: 360px) {
+  .entry-container {
+    width: 95vw;
+  }
+
+  .logo {
+    font-size: 14px;
+  }
+
+  .nav-link {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .kettle-container {
+    width: 150px;
+    height: 150px;
+  }
+
+  #kettle-svg {
+    width: 110px;
+  }
+
+  .modal-card h1 {
+    font-size: 24px;
+  }
+}
