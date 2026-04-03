@@ -8,17 +8,12 @@ const state = {
   pressTimer: null,
 };
 
-
 const nameInput = document.getElementById("name-input");
 const entryScreen = document.getElementById("entry-screen");
 const appShell = document.getElementById("app-shell");
 const statusText = document.getElementById("status-text");
 const kettle = document.getElementById("kettle-trigger");
 const steamBox = document.getElementById("steam-box");
-
-
-
-
 
 let inactivityTimer = null;
 
@@ -27,19 +22,15 @@ nameInput.addEventListener("input", (e) => {
   const btn = document.getElementById("login-btn");
   const spill = document.getElementById("tea-spill");
 
-  
   clearTimeout(inactivityTimer);
 
-  
   spill.style.display = "none";
 
-  
   if (val.length < 4) {
     btn.style.display = "none";
     return;
   }
 
-  
   if (val.length === 4) {
     inactivityTimer = setTimeout(() => {
       btn.style.display = "none";
@@ -49,13 +40,11 @@ nameInput.addEventListener("input", (e) => {
     return;
   }
 
-  
   if (val.length > 4) {
     btn.style.display = "none";
     const char = val.slice(-1);
     createFallingChar(char);
 
-    
     nameInput.value = val.slice(0, 4);
 
     inactivityTimer = setTimeout(() => {
@@ -64,7 +53,6 @@ nameInput.addEventListener("input", (e) => {
     }, 1500);
   }
 
-  
   if (val.length > 10) {
     clearTimeout(inactivityTimer);
     setTimeout(transitionToDashboard, 1000);
@@ -75,7 +63,7 @@ function createFallingChar(char) {
   const span = document.createElement("span");
   span.className = "falling-char";
   span.innerText = char;
-  
+
   span.style.left = 40 + Math.random() * 200 + "px";
   span.style.top = "60px";
   nameInput.parentElement.appendChild(span);
@@ -84,7 +72,7 @@ function createFallingChar(char) {
 
 function triggerTeaOverflow() {
   const spill = document.getElementById("tea-spill");
-  spill.style.display = "block"; 
+  spill.style.display = "block";
 }
 
 function transitionToDashboard() {
@@ -93,7 +81,12 @@ function transitionToDashboard() {
     entryScreen.style.display = "none";
     appShell.style.opacity = "1";
 
-    
+    // Play teapot audio immediately on dashboard load
+    const audio = new Audio("./teapot.m4a");
+    audio.volume = 0.6;
+    audio.loop = true;
+    audio.play().catch(() => {});
+
     const bootMessages = [
       "Initializing HTCPCP/1.0...",
       "BREW / HTCPCP/1.0 → 200 OK",
@@ -110,11 +103,9 @@ function transitionToDashboard() {
   }, 500);
 }
 
-
 function handleNav(route) {
   statusText.innerText = `GET /${route.toLowerCase()} → 418 I'm a teapot (RFC 2324)`;
 }
-
 
 kettle.addEventListener("mousedown", startPress);
 kettle.addEventListener("mouseup", endPress);
@@ -123,21 +114,48 @@ kettle.addEventListener("mouseleave", endPress);
 function startPress() {
   state.isLongPress = false;
   kettle.style.transform = "scale(0.95)";
+
+  kettle.classList.add("kettle-pouring");
+  document.getElementById("tea-pour").style.height = "80px";
+  document.getElementById("tea-pour").style.opacity = "1";
+
   state.pressTimer = setTimeout(() => {
     state.isLongPress = true;
-    cyclePage();
+
+    kettle.classList.add("kettle-tilting");
+    setTimeout(() => {
+      kettle.classList.remove("kettle-tilting");
+      kettle.classList.remove("kettle-pouring");
+      document.getElementById("tea-pour").style.height = "0";
+      document.getElementById("tea-pour").style.opacity = "0";
+      kettle.style.transform = "scale(1)";
+      cyclePage();
+
+      const currentRoute = state.pages[state.currentIndex];
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.classList.remove("active");
+        if (link.textContent.trim() === currentRoute) {
+          link.classList.add("active");
+        }
+      });
+    }, 900);
   }, 1000);
 }
 
 function endPress(e) {
   clearTimeout(state.pressTimer);
-  kettle.style.transform = "scale(1)";
-  if (!state.isLongPress && e.type === "mouseup") {
-    triggerChaos();
+
+  kettle.classList.remove("kettle-pouring");
+  document.getElementById("tea-pour").style.height = "0";
+  document.getElementById("tea-pour").style.opacity = "0";
+
+  if (!state.isLongPress) {
+    kettle.style.transform = "scale(1)";
+    if (e.type === "mouseup") {
+      triggerChaos();
+    }
   }
 }
-
-
 function triggerChaos() {
   statusText.innerText = "Kettle: Internal Pressure Rising...";
   for (let i = 0; i < 10; i++) {
@@ -159,18 +177,15 @@ function triggerChaos() {
   createSteam();
 }
 
-
 function cyclePage() {
   state.currentIndex = (state.currentIndex + 1) % state.pages.length;
   const nextRoute = state.pages[state.currentIndex];
 
-  
   document
     .querySelectorAll(".page-content")
     .forEach((p) => p.classList.remove("active"));
   document.getElementById(`page-${nextRoute}`).classList.add("active");
 
-  
   document.querySelectorAll(".nav-link").forEach((link) => {
     link.classList.remove("active");
     if (link.textContent.trim() === nextRoute) {
@@ -197,7 +212,6 @@ function createSteam() {
   setTimeout(() => steam.remove(), 2000);
 }
 
-
 function triggerEnd() {
   appShell.style.opacity = "0.3";
   document.getElementById("final-modal").style.display = "flex";
@@ -210,4 +224,3 @@ function showHistoryModal() {
 function closeHistoryModal() {
   document.getElementById("history-modal").style.display = "none";
 }
-

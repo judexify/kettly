@@ -123,6 +123,24 @@ body {
   transition: background 0.2s;
 }
 
+.entry-date {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1e293b;
+  color: #64748b;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 7px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.04em;
+  border-top: 1px solid #334155;
+}
+
 .nav-link:hover {
   background: #f1f5f9;
 }
@@ -207,6 +225,41 @@ body {
   justify-content: center;
   background: #fff;
   margin-top: 20px;
+}
+
+.brew-date {
+  grid-column: span 2;
+  background: #1e293b;
+  color: #64748b;
+  font-family: monospace;
+  font-size: 12px;
+  text-align: center;
+  padding: 7px 20px;
+  border-top: 1px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.04em;
+}
+
+.brew-date-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d97706;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.brew-date-highlight {
+  color: #d97706;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+}
+
+.brew-date-sep {
+  color: #334155;
 }
 
 #final-modal {
@@ -399,6 +452,50 @@ body {
   width: 5.4rem;
 }
 
+.kettle-tilting {
+  animation: kettleTilt 1s ease-in-out forwards;
+}
+
+@keyframes kettleTilt {
+  0% {
+    transform: scale(0.95) rotate(0deg);
+  }
+  30% {
+    transform: scale(0.95) rotate(-20deg);
+  }
+  60% {
+    transform: scale(0.95) rotate(-25deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.kettle-pouring .tea-pour {
+  opacity: 1;
+}
+
+.tea-pour {
+  position: absolute;
+  top: 60px;
+  right: -8px;
+  width: 6px;
+  height: 0;
+  background: linear-gradient(to bottom, #d97706, #92400e);
+  border-radius: 0 0 4px 4px;
+  opacity: 0;
+  transition:
+    height 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.kettle-pouring .tea-pour {
+  height: 80px;
+  opacity: 1;
+}
+
+/* media query */
+
 @media (max-width: 768px) {
   #app-shell {
     grid-template-columns: 1fr;
@@ -458,11 +555,38 @@ body {
   .modal-card h1 {
     font-size: 36px;
   }
+
+  .brew-date {
+    grid-column: 1;
+    font-size: 11px;
+    padding: 6px 12px;
+    gap: 6px;
+  }
 }
 
 @media (max-width: 480px) {
   .entry-container {
     width: 90vw;
+  }
+
+  .brew-date {
+    font-size: 10px;
+    padding: 5px 8px;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .brew-date-sep {
+    display: none;
+  }
+
+  .entry-date {
+    font-size: 10px;
+    padding: 5px 8px;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   #name-input {
