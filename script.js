@@ -110,6 +110,9 @@ function handleNav(route) {
 kettle.addEventListener("mousedown", startPress);
 kettle.addEventListener("mouseup", endPress);
 kettle.addEventListener("mouseleave", endPress);
+kettle.addEventListener("touchstart", startPress, { passive: true });
+kettle.addEventListener("touchend", endPress);
+kettle.addEventListener("touchcancel", endPress);
 
 function startPress() {
   state.isLongPress = false;
@@ -151,7 +154,7 @@ function endPress(e) {
 
   if (!state.isLongPress) {
     kettle.style.transform = "scale(1)";
-    if (e.type === "mouseup") {
+    if (e.type === "mouseup" || e.type === "touchend") {
       triggerChaos();
     }
   }
