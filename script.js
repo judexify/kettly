@@ -110,14 +110,17 @@ function handleNav(route) {
 kettle.addEventListener("mousedown", startPress);
 kettle.addEventListener("mouseup", endPress);
 kettle.addEventListener("mouseleave", endPress);
-kettle.addEventListener("touchstart", startPress, { passive: true });
+kettle.addEventListener("touchstart", startPress, { passive: false });
 kettle.addEventListener("touchend", endPress);
 kettle.addEventListener("touchcancel", endPress);
 
-function startPress() {
-  state.isLongPress = false;
-  kettle.style.transform = "scale(0.95)";
+function startPress(e) {
+  e.preventDefault();
 
+  state.isLongPress = false;
+  clearTimeout(state.pressTimer);
+
+  kettle.style.transform = "scale(0.95)";
   kettle.classList.add("kettle-pouring");
   document.getElementById("tea-pour").style.height = "80px";
   document.getElementById("tea-pour").style.opacity = "1";
@@ -126,6 +129,7 @@ function startPress() {
     state.isLongPress = true;
 
     kettle.classList.add("kettle-tilting");
+
     setTimeout(() => {
       kettle.classList.remove("kettle-tilting");
       kettle.classList.remove("kettle-pouring");
@@ -146,19 +150,21 @@ function startPress() {
 }
 
 function endPress(e) {
+  if (state.isLongPress) return;
+
   clearTimeout(state.pressTimer);
 
   kettle.classList.remove("kettle-pouring");
+  kettle.classList.remove("kettle-tilting");
   document.getElementById("tea-pour").style.height = "0";
   document.getElementById("tea-pour").style.opacity = "0";
+  kettle.style.transform = "scale(1)";
 
-  if (!state.isLongPress) {
-    kettle.style.transform = "scale(1)";
-    if (e.type === "mouseup" || e.type === "touchend") {
-      triggerChaos();
-    }
+  if (e.type === "mouseup" || e.type === "touchend") {
+    triggerChaos();
   }
 }
+
 function triggerChaos() {
   statusText.innerText = "Kettle: Internal Pressure Rising...";
   for (let i = 0; i < 10; i++) {
