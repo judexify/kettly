@@ -1,5 +1,12 @@
 "use strict";
 
+if (
+  !document.referrer.includes("index") &&
+  !document.referrer.includes("kettly-modern")
+) {
+  window.location.href = "index.html";
+}
+
 const state = {
   pages: ["Overview", "Analytics", "Reports"],
   currentIndex: 0,

@@ -37,6 +37,21 @@ body {
   transition: opacity 0.5s ease;
 }
 
+.version-link {
+  color: #c5873a;
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 4px var(--accent);
+  }
+  to {
+    text-shadow:
+      0 0 12px var(--accent),
+      0 0 20px var(--accent);
+  }
+}
 .entry-container {
   text-align: center;
   width: 300px;

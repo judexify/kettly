@@ -1,452 +1,1505 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
   <head>
-    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kettly | Enterprise Brewing Solutions</title>
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="favicon/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="favicon/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="favicon/favicon-16x16.png"
-    />
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js" defer></script>
+    <title>Kettly - Brew Intelligence Portal (Beta)</title>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+        background-color: #ffffff;
+        color: #000000;
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+        max-width: 800px;
+        min-height: 600px;
+        margin: 0 auto;
+        border-left: 1px solid #cccccc;
+        border-right: 1px solid #cccccc;
+        overflow-x: hidden;
+      }
+
+      a {
+        color: #0000cc;
+        text-decoration: underline;
+      }
+      a:visited {
+        color: #551a8b;
+      }
+      a:hover {
+        color: #cc0000;
+      }
+
+      /* ── ENTRY ── */
+      #entry {
+        display: block;
+        min-height: 100vh;
+        position: relative;
+      }
+      #entry.hidden {
+        display: none;
+      }
+
+      .entry-header-table {
+        width: 100%;
+        background-color: #cccccc;
+        border-bottom: 2px solid #999999;
+      }
+
+      .entry-header-cell {
+        padding: 6px 12px;
+      }
+
+      .site-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #cc0000;
+        font-family: "Times New Roman", Times, serif;
+        letter-spacing: -1px;
+      }
+
+      .site-title span {
+        color: #0000cc;
+      }
+
+      .site-tagline {
+        font-size: 11px;
+        color: #666666;
+        font-style: italic;
+      }
+
+      .entry-main-table {
+        width: 580px;
+        margin: 30px auto;
+        border: 2px solid #999999;
+      }
+
+      .entry-title-row {
+        background-color: #cccccc;
+        padding: 6px 10px;
+        font-size: 13px;
+        font-weight: bold;
+        border-bottom: 1px solid #999999;
+      }
+
+      .entry-body-cell {
+        padding: 20px;
+        text-align: center;
+      }
+
+      /* KETTLE.GIF placeholder */
+      .kettle-gif-box {
+        width: 120px;
+        height: 110px;
+        border: 2px inset #cccccc;
+        background-color: #f0f0f0;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 10px auto;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        font-size: 11px;
+        color: #666;
+        font-family: "Times New Roman", Times, serif;
+      }
+
+      .kettle-gif-box .broken-icon {
+        font-size: 22px;
+        margin-bottom: 4px;
+        color: #999;
+      }
+
+      .kettle-gif-box .gif-label {
+        font-size: 10px;
+        color: #666;
+        font-style: italic;
+      }
+
+      .kettle-overflow {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 0%;
+        background-color: #c8860044;
+        transition: height 0.3s;
+        pointer-events: none;
+      }
+
+      .entry-form-row {
+        margin: 14px 0 8px;
+      }
+
+      .entry-label {
+        font-size: 13px;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .entry-input {
+        border: 2px inset #cccccc;
+        padding: 3px 6px;
+        font-family: "Times New Roman", Times, serif;
+        font-size: 13px;
+        width: 220px;
+        background: #ffffff;
+      }
+
+      .entry-input:focus {
+        outline: 1px dotted #0000cc;
+      }
+
+      .entry-submit {
+        background-color: #cccccc;
+        border: 2px outset #cccccc;
+        font-family: "Times New Roman", Times, serif;
+        font-size: 13px;
+        padding: 3px 16px;
+        cursor: pointer;
+        margin-top: 10px;
+        display: none;
+      }
+
+      .entry-submit.visible {
+        display: inline-block;
+      }
+      .entry-submit:active {
+        border-style: inset;
+      }
+
+      .entry-hint {
+        font-size: 11px;
+        color: #666;
+        font-style: italic;
+        margin-top: 5px;
+      }
+
+      .falling-letters-wrap {
+        position: relative;
+        height: 20px;
+        overflow: visible;
+        pointer-events: none;
+      }
+
+      .falling-letter {
+        position: absolute;
+        font-family: "Times New Roman", serif;
+        font-size: 13px;
+        color: #cc0000;
+        animation: fall90s 0.7s ease-in forwards;
+      }
+
+      @keyframes fall90s {
+        0% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(60px);
+          opacity: 0;
+        }
+      }
+
+      /* counter row */
+      .entry-counter {
+        font-size: 11px;
+        color: #666;
+        margin-top: 16px;
+        border-top: 1px solid #cccccc;
+        padding-top: 8px;
+      }
+
+      .counter-img {
+        display: inline-block;
+        background: #000;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+        padding: 1px 6px;
+        letter-spacing: 2px;
+        border: 1px inset #333;
+      }
+
+      /* ── VERSION LINK (bottom right both screens) ── */
+      .version-link-wrap {
+        position: fixed;
+        bottom: 10px;
+        right: 12px;
+        font-size: 11px;
+        z-index: 999;
+      }
+
+      .blink {
+        animation: blinker 1s step-start infinite;
+      }
+
+      @keyframes blinker {
+        50% {
+          visibility: hidden;
+        }
+      }
+
+      /* ── DASHBOARD ── */
+      #dashboard {
+        display: none;
+      }
+      #dashboard.visible {
+        display: block;
+      }
+
+      /* topbar */
+      .dash-topbar-table {
+        width: 100%;
+        background-color: #cccccc;
+        border-bottom: 2px solid #999999;
+      }
+
+      .dash-logo-cell {
+        padding: 5px 10px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #cc0000;
+        font-family: "Times New Roman", serif;
+        width: 1%;
+        white-space: nowrap;
+      }
+      .dash-logo-cell span {
+        color: #0000cc;
+      }
+
+      .dash-nav-cell {
+        padding: 5px 10px;
+        font-size: 12px;
+      }
+
+      .dash-nav-cell a {
+        margin-right: 14px;
+        font-weight: bold;
+        font-size: 12px;
+        cursor: pointer;
+        text-decoration: none;
+        color: #0000cc;
+      }
+
+      .dash-nav-cell a:hover {
+        color: #cc0000;
+        text-decoration: underline;
+      }
+
+      .dash-greeting-cell {
+        padding: 5px 10px;
+        font-size: 11px;
+        color: #333333;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      /* nav pills row */
+      .nav-pills-table {
+        width: 100%;
+        background-color: #eeeeee;
+        border-bottom: 1px solid #cccccc;
+      }
+
+      .nav-pills-cell {
+        padding: 4px 10px;
+        font-size: 12px;
+      }
+
+      /* layout */
+      .dash-layout-table {
+        width: 100%;
+        height: calc(100vh - 90px);
+      }
+
+      /* left sidebar */
+      .sidebar-cell {
+        width: 160px;
+        background-color: #f0f0f0;
+        border-right: 1px solid #cccccc;
+        vertical-align: top;
+        padding: 10px 0;
+      }
+
+      .sidebar-section-header {
+        background-color: #cccccc;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-weight: bold;
+        color: #333;
+        border-top: 1px solid #999;
+        border-bottom: 1px solid #999;
+        margin-bottom: 4px;
+      }
+
+      .sidebar-link {
+        display: block;
+        padding: 3px 12px;
+        font-size: 12px;
+        color: #0000cc;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .sidebar-link:hover {
+        background-color: #dddddd;
+        color: #cc0000;
+        text-decoration: underline;
+      }
+
+      .sidebar-divider {
+        border: none;
+        border-top: 1px solid #cccccc;
+        margin: 6px 8px;
+      }
+
+      /* main content */
+      .main-cell {
+        vertical-align: top;
+        padding: 14px;
+        background: #ffffff;
+      }
+
+      /* kettle column */
+      .kettle-cell {
+        width: 190px;
+        vertical-align: top;
+        padding: 14px 10px;
+        background-color: #f9f9f9;
+        border-left: 1px solid #cccccc;
+        text-align: center;
+      }
+
+      .kettle-cell-title {
+        font-size: 11px;
+        font-weight: bold;
+        color: #333;
+        border-bottom: 1px solid #cccccc;
+        padding-bottom: 4px;
+        margin-bottom: 10px;
+        text-align: left;
+      }
+
+      /* dashboard kettle.gif */
+      .dash-kettle-gif {
+        width: 150px;
+        height: 140px;
+        border: 2px inset #cccccc;
+        background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        font-family: "Times New Roman", serif;
+      }
+
+      .dash-kettle-gif .broken-icon {
+        font-size: 28px;
+        color: #999;
+        margin-bottom: 4px;
+      }
+
+      .dash-kettle-gif .gif-name {
+        font-size: 10px;
+        color: #0000cc;
+        text-decoration: underline;
+        font-style: italic;
+      }
+
+      .dash-kettle-gif .gif-418 {
+        font-size: 18px;
+        font-weight: bold;
+        color: #cc0000;
+        margin-bottom: 2px;
+      }
+
+      /* hold ring for 90s kettle - just a border flash */
+      .dash-kettle-gif.holding {
+        border-color: #cc0000;
+        border-style: solid;
+      }
+
+      .kettle-instructions {
+        font-size: 10px;
+        color: #666;
+        font-style: italic;
+        line-height: 1.6;
+        text-align: left;
+      }
+
+      .brew-counter-90s {
+        font-size: 11px;
+        color: #333;
+        margin-top: 8px;
+        border-top: 1px solid #ccc;
+        padding-top: 6px;
+      }
+
+      /* steam 90s */
+      .steam-90s {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 6px;
+        pointer-events: none;
+      }
+
+      .steam-char {
+        font-size: 11px;
+        color: #999;
+        opacity: 0;
+        font-style: italic;
+      }
+
+      .steam-char.active {
+        animation: steamChar 0.8s ease-out forwards;
+      }
+
+      @keyframes steamChar {
+        0% {
+          opacity: 0.8;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+      }
+
+      /* chaos 90s */
+      .chaos-char {
+        position: absolute;
+        font-size: 12px;
+        color: #cc0000;
+        pointer-events: none;
+        font-weight: bold;
+        animation: chaosChar 0.6s ease-out forwards;
+      }
+
+      @keyframes chaosChar {
+        0% {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(var(--tx), var(--ty));
+          opacity: 0;
+        }
+      }
+
+      /* pages */
+      .page-section {
+        display: none;
+      }
+      .page-section.active {
+        display: block;
+      }
+
+      .page-heading {
+        font-size: 16px;
+        font-weight: bold;
+        color: #cc0000;
+        border-bottom: 2px solid #cccccc;
+        padding-bottom: 4px;
+        margin-bottom: 12px;
+      }
+
+      .data-table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 12px;
+        margin-bottom: 12px;
+      }
+
+      .data-table th {
+        background-color: #cccccc;
+        border: 1px solid #999999;
+        padding: 3px 8px;
+        text-align: left;
+        font-weight: bold;
+      }
+
+      .data-table td {
+        border: 1px solid #cccccc;
+        padding: 3px 8px;
+        background: #ffffff;
+      }
+
+      .data-table tr:nth-child(even) td {
+        background: #f9f9f9;
+      }
+
+      .metric-table {
+        border-collapse: collapse;
+        margin-bottom: 12px;
+      }
+
+      .metric-box {
+        border: 2px inset #cccccc;
+        background: #f0f0f0;
+        padding: 6px 14px;
+        text-align: center;
+        margin-right: 8px;
+      }
+
+      .metric-num {
+        font-size: 22px;
+        font-weight: bold;
+        color: #cc0000;
+        font-family: "Courier New", monospace;
+        display: block;
+      }
+
+      .metric-lbl {
+        font-size: 10px;
+        color: #333;
+        display: block;
+      }
+
+      .chart-box-90s {
+        border: 2px inset #cccccc;
+        background: #ffffff;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: #999;
+        font-style: italic;
+        margin-bottom: 10px;
+        position: relative;
+      }
+
+      .chart-flatline {
+        position: absolute;
+        bottom: 35px;
+        left: 20px;
+        right: 20px;
+        height: 1px;
+        background: #cc0000;
+        opacity: 0.4;
+      }
+
+      .info-box-90s {
+        border: 1px solid #cccccc;
+        background-color: #fffbe6;
+        padding: 8px 10px;
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+
+      /* empty state */
+      #empty-state {
+        font-size: 13px;
+        color: #666;
+        font-style: italic;
+        padding: 20px 0;
+      }
+      #empty-state.hidden {
+        display: none;
+      }
+
+      /* status bar */
+      #statusbar {
+        width: 100%;
+        background-color: #cccccc;
+        border-top: 2px solid #999999;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      }
+
+      .statusbar-table {
+        width: 100%;
+      }
+
+      .statusbar-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #009900;
+        display: inline-block;
+        margin-right: 5px;
+        vertical-align: middle;
+      }
+
+      #status-text {
+        font-family: "Courier New", monospace;
+        font-size: 11px;
+        color: #333333;
+        padding: 3px 8px;
+      }
+
+      .status-418 {
+        color: #cc0000;
+        font-weight: bold;
+      }
+      .status-ok {
+        color: #006600;
+      }
+
+      .statusbar-right {
+        font-size: 10px;
+        color: #666;
+        font-style: italic;
+        padding: 3px 8px;
+        white-space: nowrap;
+        text-align: right;
+      }
+
+      /* modal */
+      #modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 500;
+        align-items: center;
+        justify-content: center;
+      }
+      #modal-overlay.visible {
+        display: flex;
+      }
+
+      .modal-90s {
+        background: #ffffff;
+        border: 3px outset #cccccc;
+        width: 360px;
+        font-family: "Times New Roman", serif;
+      }
+
+      .modal-titlebar {
+        background-color: #000080;
+        color: #ffffff;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: bold;
+        font-family: "Times New Roman", serif;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-close-btn {
+        background: #cccccc;
+        border: 2px outset #cccccc;
+        font-size: 11px;
+        padding: 0 5px;
+        cursor: pointer;
+        font-family: "Times New Roman", serif;
+        line-height: 1.4;
+      }
+
+      .modal-body {
+        padding: 18px 16px;
+        text-align: center;
+      }
+
+      .modal-418 {
+        font-size: 38px;
+        font-weight: bold;
+        color: #cc0000;
+        display: block;
+        font-family: "Courier New", monospace;
+      }
+
+      .modal-msg {
+        font-size: 13px;
+        margin: 8px 0;
+        font-weight: bold;
+      }
+
+      .modal-sub {
+        font-size: 11px;
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 12px;
+      }
+
+      .modal-ok-btn {
+        background-color: #cccccc;
+        border: 2px outset #cccccc;
+        font-family: "Times New Roman", serif;
+        font-size: 12px;
+        padding: 3px 20px;
+        cursor: pointer;
+      }
+      .modal-ok-btn:active {
+        border-style: inset;
+      }
+
+      /* bottom padding for statusbar */
+      .dash-layout-table {
+        padding-bottom: 28px;
+      }
+    </style>
   </head>
   <body>
-    <div id="entry-screen">
-      <div class="entry-container">
-        <h2 style="margin-bottom: 20px">Welcome to Kettly</h2>
-        <input
-          type="text"
-          id="name-input"
-          placeholder="Enter your name"
-          maxlength="20"
-        />
-        <button
-          id="login-btn"
-          onclick="transitionToDashboard()"
-          style="
-            margin-top: 14px;
-            width: 100%;
-            padding: 11px;
-            background: #2563eb;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            cursor: pointer;
-            display: none;
-          "
-        >
-          Login
-        </button>
+    <!-- ── ENTRY ── -->
+    <div id="entry">
+      <!-- header -->
+      <table class="entry-header-table" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="entry-header-cell">
+            <span class="site-title">Kett<span>ly</span></span>
+            &nbsp;&nbsp;
+            <span class="site-tagline"
+              >Intelligent Brew Intelligence &mdash; Beta Release 1.0</span
+            >
+          </td>
+          <td
+            style="
+              text-align: right;
+              padding: 6px 12px;
+              font-size: 11px;
+              color: #666;
+            "
+          >
+            <span style="color: #cc0000; font-weight: bold">NEW!</span>
+            &nbsp;Now HTCPCP/1.0 Compliant
+          </td>
+        </tr>
+      </table>
 
-        <div
-          class="container"
-          id="tea-spill"
-          style="
-            display: none;
-            position: relative;
-            width: 220px;
-            height: 200px;
-            margin: 16px auto 0;
-          "
-        >
-          <div class="kettle"></div>
+      <hr style="border: none; border-top: 1px solid #cccccc; margin: 0" />
 
-          <div class="tea-stream"></div>
-
-          <div class="cup-container">
-            <div class="cup">
-              <div class="tea-fill"></div>
+      <!-- main entry box -->
+      <table class="entry-main-table" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="entry-title-row">
+            Welcome to Kettly &mdash; Please Sign In
+          </td>
+        </tr>
+        <tr>
+          <td class="entry-body-cell">
+            <!-- kettle gif -->
+            <div class="kettle-gif-box" id="entry-kettle">
+              <img
+                src="pour-hot.gif"
+                width="116"
+                height="106"
+                alt="KETTLE.GIF"
+                style="display: block; object-fit: cover"
+              />
+              <div class="kettle-overflow" id="entry-overflow"></div>
             </div>
 
-            <div class="steam" style="left: 20px; animation-delay: 4s"></div>
-            <div class="steam" style="left: 40px; animation-delay: 4.5s"></div>
-            <div class="steam" style="left: 60px; animation-delay: 5s"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="entry-date">
-        <span class="brew-date-dot"></span>
-        <span>System Date:</span>
-        <span class="brew-date-highlight">Monday, 1 April 1998</span>
-        <span class="brew-date-sep">—</span>
-        <span>HTCPCP/1.0</span>
-      </div>
-    </div>
-
-    <div id="app-shell">
-      <aside class="sidebar">
-        <div class="logo">Kettly.</div>
-        <div class="nav-link active" onclick="handleNav('Overview', this)">
-          Overview
-        </div>
-        <div class="nav-link" onclick="handleNav('Analytics', this)">
-          Analytics
-        </div>
-        <div class="nav-link" onclick="handleNav('Reports', this)">Reports</div>
-      </aside>
-
-      <main class="main-content">
-        <div id="page-Overview" class="page-content active">
-          <h1>System Overview</h1>
-          <p class="odd-palette">System Status: <strong>Boiling</strong></p>
-        </div>
-
-        <div id="page-Analytics" class="page-content">
-          <h1>Data Analytics</h1>
-          <div class="chart-box">
-            <p>Extremely dynamic</p>
-          </div>
-        </div>
-
-        <div id="page-Reports" class="page-content">
-          <h1>Generated Reports</h1>
-          <p>Tea Report.pdf (empty)</p>
-        </div>
-
-        <div class="kettle-container" id="kettle-trigger">
-          <div id="steam-box"></div>
-          <div class="tea-pour" id="tea-pour"></div>
-          <svg
-            id="kettle-svg"
-            viewBox="0 0 200 200"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M50 150 C 50 180, 150 180, 150 150 L 160 80 C 160 60, 40 60, 40 80 Z"
-              fill="none"
-              stroke="#64748b"
-              stroke-width="3"
-              stroke-linecap="round"
+            <br />
+            <hr
+              style="width: 80%; border: none; border-top: 1px solid #cccccc"
             />
-            <path
-              d="M150 100 C 180 100, 180 140, 150 140"
-              fill="none"
-              stroke="#64748b"
-              stroke-width="3"
-            />
-            <path d="M45 100 L 20 90 L 25 80 Z" fill="#64748b" />
-            <path
-              d="M80 60 L 80 50 C 80 45, 120 45, 120 50 L 120 60"
-              fill="none"
-              stroke="#64748b"
-              stroke-width="3"
-            />
-            <text
-              x="75"
-              y="120"
-              font-family="monospace"
-              font-size="10"
-              fill="#94a3b8"
-            >
-              KETTLE v1.0
-            </text>
-          </svg>
-          <p style="margin-top: 15px; color: #94a3b8; font-size: 12px">
-            Hold to Navigate
-          </p>
-        </div>
-      </main>
-      <div class="brew-date">
-        <span class="brew-date-dot"></span>
-        <span>System Date:</span>
-        <span class="brew-date-highlight">Monday, 1 April 1998</span>
-        <span class="brew-date-sep">—</span>
-        <span>HTCPCP/1.0</span>
-      </div>
-      <footer class="status-bar" id="status-text">Ready.</footer>
-    </div>
 
-    <div
-      id="final-modal"
-      style="
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.8);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 2000;
-      "
-    >
-      <div class="modal-card">
-        <p
-          style="
-            color: #94a3b8;
-            font-size: 11px;
-            font-family: monospace;
-            margin-bottom: 8px;
-          "
-        >
-          HTTP/1.1 418 I'm a Teapot
-        </p>
-        <h1>418</h1>
-        <p><strong>I'm a teapot.</strong></p>
-        <p style="margin-top: 10px; color: #64748b">
-          You've brewed everything.
-        </p>
-        <p
-          style="
-            margin-top: 24px;
-            font-size: 11px;
-            color: #94a3b8;
-            font-family: monospace;
-          "
-        >
-          RFC 2324 — Hyper Text Coffee Pot Control Protocol<br />
-          Larry Masinter, 1 April 1998
-        </p>
-        <p style="margin-top: 16px">
-          <a
-            onclick="showHistoryModal()"
-            style="
-              font-size: 12px;
-              color: #2563eb;
-              cursor: pointer;
-              text-decoration: underline;
-              font-family: monospace;
-            "
-          >
-            → The story behind 418
-          </a>
-        </p>
-      </div>
-    </div>
+            <div class="entry-form-row">
+              <label class="entry-label" for="name-input"
+                >Enter your name to access the portal:</label
+              >
+              <div class="falling-letters-wrap" id="falling-letters"></div>
+              <input
+                type="text"
+                id="name-input"
+                class="entry-input"
+                maxlength="20"
+                autocomplete="off"
+              />
+              <br />
+              <span class="entry-hint">* Required field</span>
+              <br /><br />
+              <input
+                type="button"
+                value="Enter Kettly &gt;&gt;"
+                class="entry-submit"
+                id="entry-btn"
+              />
+            </div>
 
-    <div
-      id="history-modal"
-      style="
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.85);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 3000;
-        padding: 20px;
-      "
-    >
-      <div
+            <div class="entry-counter">
+              <!-- You are visitor number: -->
+              <!-- <span class="counter-img">0004182</span> -->
+              <br />
+              <span style="font-size: 10px; color: #999"
+                >Best viewed in Netscape Navigator 4.0 &bull; 800x600</span
+              >
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <p
         style="
-          background: white;
-          padding: 24px;
-          border-radius: 12px;
-          max-width: 420px;
-          width: 90%;
-          text-align: left;
-          font-family: monospace;
-          max-height: 90vh;
-          overflow-y: auto;
+          text-align: center;
+          font-size: 11px;
+          color: #666;
+          margin-top: 10px;
         "
       >
-        <p
-          style="
-            font-size: 9px;
-            color: #94a3b8;
-            letter-spacing: 0.1em;
-            margin-bottom: 4px;
-          "
-        >
-          HTTP STATUS CODE LORE
-        </p>
-        <h2
-          style="
-            font-size: 16px;
-            color: #1e293b;
-            margin-bottom: 16px;
-            line-height: 1.4;
-          "
-        >
-          The Man Who Trolled the Internet. And Won.
-        </h2>
+        &copy; 1998 Kettly Inc. All rights reserved. &bull;
+        <a href="#">Privacy Policy</a> &bull;
+        <a href="#">Terms of Use</a> &bull;
+        <a href="#">Contact Us</a>
+      </p>
 
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-          "
+      <!-- version link -->
+      <div class="version-link-wrap">
+        <span class="blink">&#9733;</span>
+        <a
+          href="./ketly-modern.html"
+          style="font-size: 18px; font-weight: bold; color: #cc0000"
         >
-          <div
-            style="
-              width: 52px;
-              height: 52px;
-              border-radius: 50%;
-              background: #1e293b;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 24px;
-              flex-shrink: 0;
-            "
-          >
-            <img src="larry.gif" class="larryImg" />
-          </div>
-          <div>
-            <p
-              style="
-                font-size: 13px;
-                font-weight: bold;
-                color: #1e293b;
-                margin-bottom: 2px;
-              "
-            >
-              Larry Masinter
-            </p>
-            <p style="font-size: 10px; color: #64748b; line-height: 1.5">
-              Engineer. Researcher. The man who hid a joke inside internet law
-              and watched the world argue about it for 27 years.
-            </p>
-          </div>
-        </div>
-
-        <div style="border-top: 1px solid #e2e8f0; margin-bottom: 14px"></div>
-
-        <p
-          style="
-            font-size: 12px;
-            color: #475569;
-            line-height: 1.7;
-            margin-bottom: 10px;
-          "
-        >
-          🗓️ <strong>1 April 1998.</strong> Larry wrote a fake-but-real-looking
-          internet document — the
-          <strong>Hyper Text Coffee Pot Control Protocol</strong> — for
-          controlling coffee pots over the internet. Was it necessary?
-          Absolutely not.
-        </p>
-
-        <p
-          style="
-            font-size: 12px;
-            color: #475569;
-            line-height: 1.7;
-            margin-bottom: 10px;
-          "
-        >
-          ☕ Inside it, he buried one line: if you ask a teapot to brew coffee,
-          it must reply with <strong>418 — I'm a teapot.</strong> The entity
-          body MAY be short and stout.
-        </p>
-
-        <div
-          style="
-            background: #f8fafc;
-            border-left: 3px solid #2563eb;
-            padding: 10px 14px;
-            border-radius: 0 6px 6px 0;
-            margin-bottom: 10px;
-          "
-        >
-          <p
-            style="
-              font-size: 11px;
-              color: #1e293b;
-              font-style: italic;
-              line-height: 1.6;
-            "
-          >
-            "Status codes are like a waiter's reply — 200 means yes, 404 means
-            not found. 418 means:
-            <strong>I am a teapot. I cannot help you.</strong>"
-          </p>
-        </div>
-
-        <p
-          style="
-            font-size: 12px;
-            color: #475569;
-            line-height: 1.7;
-            margin-bottom: 10px;
-          "
-        >
-          😱 <strong>2017:</strong> Someone tried to delete it from Node.js and
-          Go. The internet revolted. <strong>save418.com</strong> launched.
-          Thousands protested on GitHub. 418 survived — permanently reserved.
-          Forever.
-        </p>
-
-        <p
-          style="
-            font-size: 12px;
-            color: #475569;
-            line-height: 1.7;
-            margin-bottom: 14px;
-          "
-        >
-          🏆 A twenty-minute April Fools' joke is now untouchable internet law.
-          Larry didn't change the world — he made it more absurd. Which is
-          better.
-        </p>
-
-        <div
-          style="
-            background: #fffbeb;
-            border: 1px dashed #d97706;
-            border-radius: 8px;
-            padding: 12px 14px;
-            margin-bottom: 16px;
-          "
-        >
-          <p
-            style="
-              font-size: 9px;
-              color: #92400e;
-              margin-bottom: 6px;
-              letter-spacing: 0.08em;
-            "
-          >
-            ☕ OFFICIAL KETTLY JOKE
-          </p>
-          <p style="font-size: 11px; color: #78350f; line-height: 1.7">
-            A developer orders coffee.<br />
-            Barista: <strong>"418. I'm a teapot."</strong><br />
-            Developer nods, files a bug report.<br />
-            <em style="font-size: 10px"
-              >The barista was Larry. The bug was never closed.</em
-            >
-          </p>
-        </div>
-
-        <p style="font-size: 9px; color: #94a3b8; margin-bottom: 14px">
-          RFC 2324 · RFC 7168 · IETF 2017 · save418.com
-        </p>
-
-        <button
-          onclick="closeHistoryModal()"
-          style="
-            width: 100%;
-            padding: 9px;
-            background: #1e293b;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 12px;
-            cursor: pointer;
-          "
-        >
-          Close — return to teapot
-        </button>
+          NEW! Try BETA Modern Site!
+        </a>
+        <span class="blink">&#9733;</span>
       </div>
     </div>
+    <!-- end entry -->
+
+    <!-- ── DASHBOARD ── -->
+    <div id="dashboard">
+      <!-- topbar -->
+      <table
+        class="dash-topbar-table"
+        cellpadding="0"
+        cellspacing="0"
+        width="100%"
+      >
+        <tr>
+          <td class="dash-logo-cell">Kett<span>ly</span></td>
+          <td class="dash-nav-cell">
+            <a onclick="deadNav('home')">Home</a>
+            <a onclick="deadNav('my-kettly')">My Kettly</a>
+            <a onclick="deadNav('browse')">Browse</a>
+            <a onclick="deadNav('sell')">Sell</a>
+            <a onclick="deadNav('help')">Help</a>
+          </td>
+          <td class="dash-greeting-cell" id="dash-greeting">
+            Hello, <strong>User</strong> &nbsp;|&nbsp;
+            <a onclick="deadNav('sign-out')">Sign Out</a>
+          </td>
+        </tr>
+      </table>
+
+      <hr style="border: none; border-top: 1px solid #cccccc; margin: 0" />
+
+      <!-- search bar row -->
+      <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        class="nav-pills-table"
+      >
+        <tr>
+          <td class="nav-pills-cell">
+            <strong style="font-size: 12px">Search:</strong>
+            &nbsp;
+            <input
+              type="text"
+              style="
+                border: 2px inset #cccccc;
+                padding: 2px 5px;
+                font-size: 12px;
+                width: 180px;
+              "
+              value=""
+              readonly
+              onclick="deadNav('search')"
+            />
+            &nbsp;
+            <input
+              type="button"
+              value="Find"
+              style="
+                border: 2px outset #cccccc;
+                background: #cccccc;
+                font-size: 12px;
+                padding: 1px 10px;
+                cursor: pointer;
+              "
+              onclick="deadNav('search')"
+            />
+            &nbsp;&nbsp;
+            <a
+              href="#"
+              onclick="
+                deadNav('advanced-search');
+                return false;
+              "
+              style="font-size: 11px"
+              >Advanced Search</a
+            >
+          </td>
+        </tr>
+      </table>
+
+      <!-- main layout -->
+      <table
+        class="dash-layout-table"
+        cellpadding="0"
+        cellspacing="0"
+        width="100%"
+      >
+        <tr>
+          <!-- sidebar -->
+          <td class="sidebar-cell" valign="top">
+            <div class="sidebar-section-header">My Kettly</div>
+            <a class="sidebar-link" onclick="deadNav('overview')">Overview</a>
+            <a class="sidebar-link" onclick="deadNav('analytics')">Analytics</a>
+            <a class="sidebar-link" onclick="deadNav('reports')">Reports</a>
+            <hr class="sidebar-divider" />
+            <div class="sidebar-section-header">Account</div>
+            <a class="sidebar-link" onclick="deadNav('settings')">Settings</a>
+            <a class="sidebar-link" onclick="deadNav('billing')">Billing</a>
+            <a class="sidebar-link" onclick="deadNav('feedback')">Feedback</a>
+            <hr class="sidebar-divider" />
+            <div
+              style="
+                padding: 6px 10px;
+                font-size: 10px;
+                color: #666;
+                font-style: italic;
+              "
+            >
+              HTCPCP/1.0<br />
+              RFC 2324<br />
+              &copy; 1998 Kettly Inc.
+            </div>
+          </td>
+
+          <!-- main content -->
+          <td class="main-cell" valign="top" id="main-content-area">
+            <!-- empty state -->
+            <div id="empty-state">
+              <p>
+                Select a category from the menu on the left to view your brew
+                data.
+              </p>
+              <p>
+                <em
+                  >Tip: Click the KETTLE.GIF on the right to interact with your
+                  brew system.</em
+                >
+              </p>
+              <hr
+                style="
+                  border: none;
+                  border-top: 1px solid #cccccc;
+                  margin: 10px 0;
+                "
+              />
+              <p style="font-size: 11px; color: #999">
+                No items to display. Please try again later.
+              </p>
+            </div>
+
+            <!-- Overview -->
+            <div class="page-section" id="page-overview">
+              <div class="page-heading">Overview &mdash; Brew Summary</div>
+              <table class="metric-table" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <div class="metric-box">
+                      <span class="metric-num">418</span>
+                      <span class="metric-lbl">Total Brews</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="metric-box">
+                      <span class="metric-num">100%</span>
+                      <span class="metric-lbl">Uptime</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="metric-box">
+                      <span class="metric-num">0</span>
+                      <span class="metric-lbl">Errors</span>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <hr
+                style="
+                  border: none;
+                  border-top: 1px solid #cccccc;
+                  margin: 10px 0;
+                "
+              />
+              <div class="info-box-90s">
+                <strong>System Status: Boiling.</strong><br />
+                All pipelines nominal. No data has been collected, processed, or
+                stored. Last protocol: <code>HTCPCP/1.0 BREW</code> &mdash;
+                returned
+                <strong style="color: #cc0000">418 I'm a Teapot</strong>.
+              </div>
+              <p style="font-size: 11px; color: #666; font-style: italic">
+                * The entity contacted is a teapot and cannot brew coffee. This
+                is expected behaviour.
+              </p>
+            </div>
+
+            <!-- Analytics -->
+            <div class="page-section" id="page-analytics">
+              <div class="page-heading">
+                Analytics &mdash; Brew Intelligence
+              </div>
+              <table class="metric-table" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <div class="metric-box">
+                      <span class="metric-num">418%</span>
+                      <span class="metric-lbl">Bounce Rate</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="metric-box">
+                      <span class="metric-num">&infin;</span>
+                      <span class="metric-lbl">Avg. Session</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="metric-box">
+                      <span class="metric-num">0</span>
+                      <span class="metric-lbl">Data Points</span>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <hr
+                style="
+                  border: none;
+                  border-top: 1px solid #cccccc;
+                  margin: 10px 0;
+                "
+              />
+              <div class="chart-box-90s">
+                <div class="chart-flatline"></div>
+                <span>[ CHART.GIF &mdash; perfectly flat. very healthy. ]</span>
+              </div>
+              <div class="info-box-90s" style="font-size: 11px; color: #666">
+                Trend: stable. Confidence: absolute. Methodology: unknown.<br />
+                Users are not leaving &mdash; they simply never arrived in a
+                measurable sense.
+              </div>
+            </div>
+
+            <!-- Reports -->
+            <div class="page-section" id="page-reports">
+              <div class="page-heading">
+                Reports &mdash; Generated Documents
+              </div>
+              <table class="data-table" cellpadding="0" cellspacing="0">
+                <tr>
+                  <th>Report Name</th>
+                  <th>Status</th>
+                  <th>Generated</th>
+                  <th>Size</th>
+                  <th>Action</th>
+                </tr>
+                <tr>
+                  <td>Tea Report.pdf</td>
+                  <td style="color: #cc0000">Empty</td>
+                  <td>Never</td>
+                  <td>0 KB</td>
+                  <td>
+                    <a
+                      href="#"
+                      onclick="
+                        deadNav('download');
+                        return false;
+                      "
+                      >Download</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Q4 Brew Summary.csv</td>
+                  <td style="color: #996600">Pending</td>
+                  <td>Unknown</td>
+                  <td>&mdash;</td>
+                  <td>
+                    <a
+                      href="#"
+                      onclick="
+                        deadNav('download');
+                        return false;
+                      "
+                      >Download</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Steam Analysis 2024.xls</td>
+                  <td style="color: #006600">Brewing</td>
+                  <td>Soon&trade;</td>
+                  <td>&mdash;</td>
+                  <td>
+                    <a
+                      href="#"
+                      onclick="
+                        deadNav('download');
+                        return false;
+                      "
+                      >Download</a
+                    >
+                  </td>
+                </tr>
+              </table>
+              <p style="font-size: 11px; color: #666; font-style: italic">
+                3 reports found. 0 reports readable. All exports are final,
+                non-refundable, and served at 100&deg;C.
+              </p>
+            </div>
+          </td>
+
+          <!-- kettle column -->
+          <td class="kettle-cell" valign="top">
+            <div class="kettle-cell-title">CONTROL UNIT</div>
+
+            <div class="dash-kettle-gif" id="dash-kettle">
+              <div class="steam-90s" id="steam-90s">
+                <span class="steam-char" id="sc1">~</span>
+                <span class="steam-char" id="sc2">~</span>
+                <span class="steam-char" id="sc3">~</span>
+              </div>
+              <img
+                src="pour-hot.gif"
+                width="146"
+                height="136"
+                alt="KETTLE.GIF"
+                style="display: block; object-fit: cover"
+                id="kettle-gif"
+              />
+            </div>
+
+            <div class="kettle-instructions">
+              <strong>Instructions:</strong><br />
+              &bull; Click: spills tea<br />
+              &bull; Hold 1 sec: brews page<br />
+              <br />
+              <em>Hint: the kettle<br />is the only<br />navigation.</em>
+            </div>
+
+            <div class="brew-counter-90s" id="brew-counter">
+              Brews: <strong>0</strong> / 3
+            </div>
+
+            <hr
+              style="border: none; border-top: 1px solid #cccccc; margin: 8px 0"
+            />
+            <div style="font-size: 10px; color: #666; text-align: left">
+              <span style="color: #cc0000; font-weight: bold">NEW!</span>
+              Brew faster with<br />
+              <a
+                href="#"
+                onclick="
+                  deadNav('kettly-pro');
+                  return false;
+                "
+                >Kettly Pro&trade;</a
+              >
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- status bar -->
+      <div id="statusbar">
+        <table class="statusbar-table" cellpadding="0" cellspacing="0">
+          <tr>
+            <td
+              id="status-text"
+              style="
+                padding: 3px 8px;
+                font-family: &quot;Courier New&quot;, monospace;
+                font-size: 11px;
+              "
+            >
+              <span class="statusbar-dot"></span>
+              <span class="status-ok"
+                >// system ready &mdash; HTCPCP/1.0 &mdash; RFC 2324</span
+              >
+            </td>
+            <td class="statusbar-right">kettly v1.0.0-teapot</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- version link -->
+      <div class="version-link-wrap">
+        <span class="blink">&#9733;</span>
+        <a
+          href="./ketly-modern.html"
+          style="font-size: 11px; font-weight: bold; color: #cc0000"
+        >
+          NEW! Try BETA Modern Site!
+        </a>
+        <span class="blink">&#9733;</span>
+      </div>
+    </div>
+    <!-- end dashboard -->
+
+    <!-- modal -->
+    <div id="modal-overlay">
+      <div class="modal-90s">
+        <div class="modal-titlebar">
+          <span>Kettly &mdash; System Message</span>
+          <button class="modal-close-btn" id="modal-close-btn">X</button>
+        </div>
+        <div class="modal-body">
+          <span class="modal-418">418</span>
+          <div class="modal-msg">You've brewed everything.</div>
+          <div class="modal-sub">
+            The entity attempting to be a web server is, in fact, a teapot.<br />
+            Brewing is complete. There is nothing left to render.<br /><br />
+            <em>&mdash; RFC 2324, Larry Masinter, 1998</em>
+          </div>
+          <input
+            type="button"
+            value="OK (does nothing)"
+            class="modal-ok-btn"
+            id="modal-ok-btn"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var PAGES = ["overview", "analytics", "reports"];
+      var clickCount = 0;
+      var userName = "";
+      var holdTimer = null;
+      var holdInterval = null;
+      var isHolding = false;
+      var holdProgress = 0;
+      var allBrewed = false;
+      var kettleGif = document.getElementById("kettle-gif");
+      var normalGif = "pour-hot.gif";
+      var holdGif = "pour-hot2.gif";
+
+      // ── ENTRY ──
+      var nameInput = document.getElementById("name-input");
+      var entryBtn = document.getElementById("entry-btn");
+      var fallingLetters = document.getElementById("falling-letters");
+      var entryOverflow = document.getElementById("entry-overflow");
+      var entryDiv = document.getElementById("entry");
+      var dashDiv = document.getElementById("dashboard");
+
+      nameInput.onkeyup = function () {
+        var val = nameInput.value;
+        entryBtn.className =
+          val.length >= 2 ? "entry-submit visible" : "entry-submit";
+
+        if (val.length > 4) {
+          var lastChar = val[val.length - 1];
+          spawnFallingLetter(lastChar);
+          var pct = Math.min((val.length - 4) * 8, 70);
+          entryOverflow.style.height = pct + "%";
+        } else {
+          entryOverflow.style.height = "0%";
+        }
+      };
+
+      function spawnFallingLetter(ch) {
+        var el = document.createElement("span");
+        el.className = "falling-letter";
+        el.textContent = ch;
+        el.style.left = Math.round(Math.random() * 80 + 10) + "%";
+        fallingLetters.appendChild(el);
+        setTimeout(function () {
+          el.parentNode && el.parentNode.removeChild(el);
+        }, 800);
+      }
+
+      entryBtn.onclick = function () {
+        var utterance = new SpeechSynthesisUtterance(
+          "I am a teapot. Hold the kettle to Navigate around.",
+        );
+        utterance.pitch = 0.8;
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+        launchDashboard();
+      };
+
+      function launchDashboard() {
+        userName = nameInput.value.trim() || "User";
+        entryDiv.style.opacity = "0";
+        entryDiv.style.transition = "opacity 0.5s";
+        setTimeout(function () {
+          entryDiv.className = "hidden";
+          dashDiv.className = "visible";
+          document.getElementById("dash-greeting").innerHTML =
+            "Hello, <strong>" +
+            userName +
+            "</strong> &nbsp;|&nbsp; <a onclick=\"deadNav('sign-out')\">Sign Out</a>";
+          setStatus(
+            '<span class="status-ok">// welcome ' +
+              userName +
+              " &mdash; dashboard loaded &mdash; awaiting instruction</span>",
+          );
+        }, 500);
+      }
+
+      // ── DEAD NAV ──
+      function deadNav(route) {
+        setStatus(
+          '<span class="status-418">GET /' +
+            route +
+            " &rarr; 418 I'm a Teapot</span>",
+        );
+      }
+
+      // ── KETTLE ──
+      var dashKettle = document.getElementById("dash-kettle");
+      var sc1 = document.getElementById("sc1");
+      var sc2 = document.getElementById("sc2");
+      var sc3 = document.getElementById("sc3");
+
+      function triggerSteam() {
+        [sc1, sc2, sc3].forEach(function (s, i) {
+          s.classList.remove("active");
+          setTimeout(function () {
+            s.classList.add("active");
+          }, i * 100);
+        });
+        setTimeout(function () {
+          [sc1, sc2, sc3].forEach(function (s) {
+            s.classList.remove("active");
+          });
+        }, 1000);
+      }
+
+      function triggerChaos() {
+        var chars = ["!", "*", "~", "#", "@", "?", "!", "%"];
+        for (var i = 0; i < 8; i++) {
+          (function (idx) {
+            var p = document.createElement("span");
+            p.className = "chaos-char";
+            p.textContent = chars[idx % chars.length];
+            var angle = (idx / 8) * Math.PI * 2;
+            var dist = 35 + Math.random() * 25;
+            p.style.setProperty(
+              "--tx",
+              Math.round(Math.cos(angle) * dist) + "px",
+            );
+            p.style.setProperty(
+              "--ty",
+              Math.round(Math.sin(angle) * dist) + "px",
+            );
+            p.style.left = "50%";
+            p.style.top = "50%";
+            dashKettle.appendChild(p);
+            setTimeout(function () {
+              p.parentNode && p.parentNode.removeChild(p);
+            }, 700);
+          })(i);
+        }
+        setStatus(
+          '<span class="status-418">SHORT CLICK &mdash; HTCPCP BREW refused &mdash; 418 I\'m a Teapot &mdash; hold longer</span>',
+        );
+        triggerSteam();
+      }
+
+      function triggerBrew() {
+        clickCount++;
+        var pageIndex = (clickCount - 1) % PAGES.length;
+        var pageName = PAGES[pageIndex];
+
+        document.getElementById("empty-state").className = "hidden";
+        document.querySelectorAll(".page-section").forEach(function (p) {
+          p.className = "page-section";
+        });
+        document.getElementById("page-" + pageName).className =
+          "page-section active";
+
+        triggerSteam();
+
+        document.getElementById("brew-counter").innerHTML =
+          "Brews: <strong>" + Math.min(clickCount, 3) + "</strong> / 3";
+
+        setStatus(
+          '<span class="status-ok">BREW &rarr; ' +
+            pageName.toUpperCase() +
+            " &mdash; 200 OK (served at 100&deg;C)</span>",
+        );
+
+        if (clickCount >= 3 && !allBrewed) {
+          allBrewed = true;
+          setTimeout(function () {
+            dashDiv.style.opacity = "0.5";
+            dashDiv.style.transition = "opacity 0.6s";
+            document.getElementById("modal-overlay").className = "visible";
+          }, 1200);
+        }
+      }
+
+      dashKettle.addEventListener("mousedown", startHold);
+      dashKettle.addEventListener("touchstart", startHold, { passive: true });
+      dashKettle.addEventListener("mouseup", endHold);
+      dashKettle.addEventListener("mouseleave", cancelHold);
+      dashKettle.addEventListener("touchend", endHold);
+      dashKettle.addEventListener("touchcancel", cancelHold);
+
+      function startHold() {
+        kettleGif.src = holdGif;
+        isHolding = true;
+        holdProgress = 0;
+        dashKettle.classList.add("holding");
+
+        holdInterval = setInterval(function () {
+          holdProgress += 50;
+        }, 50);
+
+        holdTimer = setTimeout(function () {
+          isHolding = false;
+          clearInterval(holdInterval);
+          dashKettle.classList.remove("holding");
+          triggerBrew();
+        }, 1000);
+      }
+
+      function endHold() {
+        kettleGif.src = normalGif;
+        if (!isHolding) return;
+        isHolding = false;
+        clearTimeout(holdTimer);
+        clearInterval(holdInterval);
+        dashKettle.classList.remove("holding");
+        if (holdProgress < 900) triggerChaos();
+      }
+
+      function cancelHold() {
+        kettleGif.src = normalGif;
+        if (!isHolding) return;
+        isHolding = false;
+        clearTimeout(holdTimer);
+        clearInterval(holdInterval);
+        dashKettle.classList.remove("holding");
+      }
+
+      // ── MODAL ──
+      document.getElementById("modal-close-btn").onclick = function () {
+        setStatus(
+          '<span class="status-418">DISMISS &rarr; 418 I\'m a Teapot &mdash; this button was never going to work</span>',
+        );
+      };
+      document.getElementById("modal-ok-btn").onclick = function () {
+        setStatus(
+          '<span class="status-418">OK &rarr; 418 I\'m a Teapot &mdash; this button was never going to work</span>',
+        );
+      };
+
+      // ── STATUS ──
+      function setStatus(html) {
+        document.getElementById("status-text").innerHTML =
+          '<span class="statusbar-dot"></span> ' + html;
+      }
+    </script>
   </body>
 </html>

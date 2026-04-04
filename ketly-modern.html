@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kettly | Enterprise Brewing Solutions</title>
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="ketly-modern-style.css" />
+    <script src="ketly-modern-script.js" defer></script>
+  </head>
+  <body>
+    <div id="entry-screen">
+      <div class="entry-container">
+        <h2 style="margin-bottom: 20px">Welcome to Kettly</h2>
+        <input
+          type="text"
+          id="name-input"
+          placeholder="Enter your name"
+          maxlength="20"
+        />
+        <button
+          id="login-btn"
+          onclick="transitionToDashboard()"
+          style="
+            margin-top: 14px;
+            width: 100%;
+            padding: 11px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            display: none;
+          "
+        >
+          Login
+        </button>
+
+        <div
+          class="container"
+          id="tea-spill"
+          style="
+            display: none;
+            position: relative;
+            width: 220px;
+            height: 200px;
+            margin: 16px auto 0;
+          "
+        >
+          <div class="kettle"></div>
+
+          <div class="tea-stream"></div>
+
+          <div class="cup-container">
+            <div class="cup">
+              <div class="tea-fill"></div>
+            </div>
+
+            <div class="steam" style="left: 20px; animation-delay: 4s"></div>
+            <div class="steam" style="left: 40px; animation-delay: 4.5s"></div>
+            <div class="steam" style="left: 60px; animation-delay: 5s"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry-date">
+        <span class="brew-date-dot"></span>
+        <span>System Date:</span>
+        <span class="brew-date-highlight">Monday, 1 April 1998</span>
+        <span class="brew-date-sep">—</span>
+        <span>HTCPCP/1.0</span>
+      </div>
+
+      <div
+        style="
+          position: fixed;
+          bottom: 10px;
+          right: 12px;
+          font-size: 0.72rem;
+          z-index: 999;
+        "
+      >
+        <a
+          href="index.html"
+          style="text-decoration: none; border-bottom: 1px dashed #e2dfd7"
+          class="version-link"
+        >
+          ← Classic Version
+        </a>
+      </div>
+    </div>
+
+    <div id="app-shell">
+      <aside class="sidebar">
+        <div class="logo">Kettly.</div>
+        <div class="nav-link active" onclick="handleNav('Overview', this)">
+          Overview
+        </div>
+        <div class="nav-link" onclick="handleNav('Analytics', this)">
+          Analytics
+        </div>
+        <div class="nav-link" onclick="handleNav('Reports', this)">Reports</div>
+      </aside>
+
+      <main class="main-content">
+        <div id="page-Overview" class="page-content active">
+          <h1>System Overview</h1>
+          <p class="odd-palette">System Status: <strong>Boiling</strong></p>
+        </div>
+
+        <div id="page-Analytics" class="page-content">
+          <h1>Data Analytics</h1>
+          <div class="chart-box">
+            <p>Extremely dynamic</p>
+          </div>
+        </div>
+
+        <div id="page-Reports" class="page-content">
+          <h1>Generated Reports</h1>
+          <p>Tea Report.pdf (empty)</p>
+        </div>
+
+        <div class="kettle-container" id="kettle-trigger">
+          <div id="steam-box"></div>
+          <div class="tea-pour" id="tea-pour"></div>
+          <svg
+            id="kettle-svg"
+            viewBox="0 0 200 200"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M50 150 C 50 180, 150 180, 150 150 L 160 80 C 160 60, 40 60, 40 80 Z"
+              fill="none"
+              stroke="#64748b"
+              stroke-width="3"
+              stroke-linecap="round"
+            />
+            <path
+              d="M150 100 C 180 100, 180 140, 150 140"
+              fill="none"
+              stroke="#64748b"
+              stroke-width="3"
+            />
+            <path d="M45 100 L 20 90 L 25 80 Z" fill="#64748b" />
+            <path
+              d="M80 60 L 80 50 C 80 45, 120 45, 120 50 L 120 60"
+              fill="none"
+              stroke="#64748b"
+              stroke-width="3"
+            />
+            <text
+              x="75"
+              y="120"
+              font-family="monospace"
+              font-size="10"
+              fill="#94a3b8"
+            >
+              KETTLE v1.0
+            </text>
+          </svg>
+          <p style="margin-top: 15px; color: #94a3b8; font-size: 12px">
+            Hold to Navigate
+          </p>
+        </div>
+      </main>
+      <div class="brew-date">
+        <span class="brew-date-dot"></span>
+        <span>System Date:</span>
+        <span class="brew-date-highlight">Monday, 1 April 1998</span>
+        <span class="brew-date-sep">—</span>
+        <span>HTCPCP/1.0</span>
+      </div>
+      <footer class="status-bar" id="status-text">Ready.</footer>
+    </div>
+
+    <div
+      id="final-modal"
+      style="
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      "
+    >
+      <div class="modal-card">
+        <p
+          style="
+            color: #94a3b8;
+            font-size: 11px;
+            font-family: monospace;
+            margin-bottom: 8px;
+          "
+        >
+          HTTP/1.1 418 I'm a Teapot
+        </p>
+        <h1>418</h1>
+        <p><strong>I'm a teapot.</strong></p>
+        <p style="margin-top: 10px; color: #64748b">
+          You've brewed everything.
+        </p>
+        <p
+          style="
+            margin-top: 24px;
+            font-size: 11px;
+            color: #94a3b8;
+            font-family: monospace;
+          "
+        >
+          RFC 2324 — Hyper Text Coffee Pot Control Protocol<br />
+          Larry Masinter, 1 April 1998
+        </p>
+        <p style="margin-top: 16px">
+          <a
+            onclick="showHistoryModal()"
+            style="
+              font-size: 12px;
+              color: #2563eb;
+              cursor: pointer;
+              text-decoration: underline;
+              font-family: monospace;
+            "
+          >
+            → The story behind 418
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <div
+      id="history-modal"
+      style="
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+        padding: 20px;
+      "
+    >
+      <div
+        style="
+          background: white;
+          padding: 24px;
+          border-radius: 12px;
+          max-width: 420px;
+          width: 90%;
+          text-align: left;
+          font-family: monospace;
+          max-height: 90vh;
+          overflow-y: auto;
+        "
+      >
+        <p
+          style="
+            font-size: 9px;
+            color: #94a3b8;
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+          "
+        >
+          HTTP STATUS CODE LORE
+        </p>
+        <h2
+          style="
+            font-size: 16px;
+            color: #1e293b;
+            margin-bottom: 16px;
+            line-height: 1.4;
+          "
+        >
+          The Man Who Trolled the Internet. And Won.
+        </h2>
+
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+          "
+        >
+          <div
+            style="
+              width: 52px;
+              height: 52px;
+              border-radius: 50%;
+              background: #1e293b;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 24px;
+              flex-shrink: 0;
+            "
+          >
+            <img src="larry.gif" class="larryImg" />
+          </div>
+          <div>
+            <p
+              style="
+                font-size: 13px;
+                font-weight: bold;
+                color: #1e293b;
+                margin-bottom: 2px;
+              "
+            >
+              Larry Masinter
+            </p>
+            <p style="font-size: 10px; color: #64748b; line-height: 1.5">
+              Engineer. Researcher. The man who hid a joke inside internet law
+              and watched the world argue about it for 27 years.
+            </p>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid #e2e8f0; margin-bottom: 14px"></div>
+
+        <p
+          style="
+            font-size: 12px;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 10px;
+          "
+        >
+          🗓️ <strong>1 April 1998.</strong> Larry wrote a fake-but-real-looking
+          internet document — the
+          <strong>Hyper Text Coffee Pot Control Protocol</strong> — for
+          controlling coffee pots over the internet. Was it necessary?
+          Absolutely not.
+        </p>
+
+        <p
+          style="
+            font-size: 12px;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 10px;
+          "
+        >
+          ☕ Inside it, he buried one line: if you ask a teapot to brew coffee,
+          it must reply with <strong>418 — I'm a teapot.</strong> The entity
+          body MAY be short and stout.
+        </p>
+
+        <div
+          style="
+            background: #f8fafc;
+            border-left: 3px solid #2563eb;
+            padding: 10px 14px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 10px;
+          "
+        >
+          <p
+            style="
+              font-size: 11px;
+              color: #1e293b;
+              font-style: italic;
+              line-height: 1.6;
+            "
+          >
+            "Status codes are like a waiter's reply — 200 means yes, 404 means
+            not found. 418 means:
+            <strong>I am a teapot. I cannot help you.</strong>"
+          </p>
+        </div>
+
+        <p
+          style="
+            font-size: 12px;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 10px;
+          "
+        >
+          😱 <strong>2017:</strong> Someone tried to delete it from Node.js and
+          Go. The internet revolted. <strong>save418.com</strong> launched.
+          Thousands protested on GitHub. 418 survived — permanently reserved.
+          Forever.
+        </p>
+
+        <p
+          style="
+            font-size: 12px;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 14px;
+          "
+        >
+          🏆 A twenty-minute April Fools' joke is now untouchable internet law.
+          Larry didn't change the world — he made it more absurd. Which is
+          better.
+        </p>
+
+        <div
+          style="
+            background: #fffbeb;
+            border: 1px dashed #d97706;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+          "
+        >
+          <p
+            style="
+              font-size: 9px;
+              color: #92400e;
+              margin-bottom: 6px;
+              letter-spacing: 0.08em;
+            "
+          >
+            ☕ OFFICIAL KETTLY JOKE
+          </p>
+          <p style="font-size: 11px; color: #78350f; line-height: 1.7">
+            A developer orders coffee.<br />
+            Barista: <strong>"418. I'm a teapot."</strong><br />
+            Developer nods, files a bug report.<br />
+            <em style="font-size: 10px"
+              >The barista was Larry. The bug was never closed.</em
+            >
+          </p>
+        </div>
+
+        <p style="font-size: 9px; color: #94a3b8; margin-bottom: 14px">
+          RFC 2324 · RFC 7168 · IETF 2017 · save418.com
+        </p>
+
+        <button
+          onclick="closeHistoryModal()"
+          style="
+            width: 100%;
+            padding: 9px;
+            background: #1e293b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            cursor: pointer;
+          "
+        >
+          Close — return to teapot
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
