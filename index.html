@@ -401,6 +401,18 @@
         font-family: "Times New Roman", serif;
       }
 
+      #dash-kettle,
+      #dash-kettle img {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      #dash-kettle {
+        pointer-events: all;
+      }
+
       .dash-kettle-gif .broken-icon {
         font-size: 28px;
         color: #999;
@@ -847,18 +859,6 @@
         <a href="#">Terms of Use</a> &bull;
         <a href="#">Contact Us</a>
       </p>
-
-      <!-- version link -->
-      <div class="version-link-wrap">
-        <span class="blink">&#9733;</span>
-        <a
-          href="./ketly-modern.html"
-          style="font-size: 18px; font-weight: bold; color: #cc0000"
-        >
-          NEW! Try BETA Modern Site!
-        </a>
-        <span class="blink">&#9733;</span>
-      </div>
     </div>
     <!-- end entry -->
 
@@ -1247,6 +1247,23 @@
 
     <!-- modal -->
     <div id="modal-overlay">
+      <!-- version link -->
+      <div class="version-link-wrap">
+        <span class="blink">&#9733;</span>
+        <a
+          href="./ketly-modern.html"
+          style="
+            font-size: 18px;
+            font-weight: bold;
+            color: #cc0000;
+            z-index: 1000;
+          "
+        >
+          NEW! Try BETA Modern Site!
+        </a>
+        <span class="blink">&#9733;</span>
+      </div>
+
       <div class="modal-90s">
         <div class="modal-titlebar">
           <span>Kettly &mdash; System Message</span>
@@ -1357,6 +1374,12 @@
 
       // ── KETTLE ──
       var dashKettle = document.getElementById("dash-kettle");
+
+      var dashKettle = document.getElementById("dash-kettle");
+      dashKettle.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+      });
+
       var sc1 = document.getElementById("sc1");
       var sc2 = document.getElementById("sc2");
       var sc3 = document.getElementById("sc3");
